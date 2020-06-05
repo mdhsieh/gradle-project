@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="product_flavor_name">Free</string>
+    <string name="joke">There are 10 kinds of people in this world.\nThose who know binary and those who don\'t.</string>
 </resources>

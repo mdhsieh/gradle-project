@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="title_activity_joke">JokeActivity</string>
+    <string name="app_name">Flavor Specific Activity - Paid</string>
+    <string name="greeting">Welcome to the paid version!</string>
+    <string name="joke">This is a funny joke!</string>
+</resources>

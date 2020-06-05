@@ -22,18 +22,19 @@ Exercises:
     findstr on Windows) to find that message in the logs.
 
 */
-
 task hello(type: HelloTask)
 
 class HelloTask extends DefaultTask {
     @TaskAction
     void doAction() {
-        println 'Hello World'
+        logger.info 'Start HelloTask Action'
+        logger.lifecycle("hello world")
+        logger.info 'End HelloTask Action'
     }
 }
 
-/*
-task derpy << {
-    primp "Herp de derp"
+task derpy {
+    print "Herp de derp"
 }
-*/
+
+logger.debug("catch me if you can")

@@ -2,7 +2,8 @@ apply plugin: 'java-library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    // declare a project dependency between JokeWizard and JokeSmith
+    implementation project(':manualJokes')
 }
 
 sourceCompatibility = "7"

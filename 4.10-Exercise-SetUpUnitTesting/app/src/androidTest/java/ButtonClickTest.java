@@ -16,7 +16,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.support.test.espresso.Espresso.onView;
 
 @RunWith(AndroidJUnit4.class)
-public class ClickCounterAndroidTest {
+public class ButtonClickTest {
 
     @Rule
     public ActivityTestRule<ClickActivity> activityRule

@@ -15,7 +15,11 @@ Exercises:
 5. Modify the gradle-wrapper.properties file to use the latest Gradle
    nightly build.
 
-Hint: For more information on using Gradle nightly builds, check out the
+Hint: For more information on usigrang Gradle nightly builds, check out the
 Gradle website: http://gradle.org/gradle-nightly-build/
 
 */
+
+wrapper {
+    gradleVersion = '2.14.1'
+}

@@ -1,3 +1,5 @@
+apply plugin: 'java'
+
 /*
 
 Now that we've configured our repositories, we can define dependencies on

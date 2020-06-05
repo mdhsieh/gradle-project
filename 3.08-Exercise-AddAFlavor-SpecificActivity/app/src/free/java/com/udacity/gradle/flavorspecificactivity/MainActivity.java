@@ -1,4 +1,4 @@
-package com.udacity.gradle.flavorspecificactivity.free;
+package com.udacity.gradle.flavorspecificactivity;
 
 import androidx.appcompat.app.AppCompatActivity;
 

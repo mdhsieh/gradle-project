@@ -9,7 +9,7 @@ Exercises:
 
 1. Import the project into Android Studio.
 2. Build the project and deploy it onto a device (or emulator).
-3. Declare free and paid flavors, and replicate MainActivity across the flavors.
+3. Declare free and paid flavors, and replicate com.udacity.gradle.flavorspecificactivity.MainActivity across the flavors.
 4. Build and deploy both flavors of your app to confirm that everything still
    works.
 4. Add an activity to the paid flavor that tells a joke. Remember the manifest!
@@ -26,13 +26,15 @@ folder.
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 29
+    buildToolsVersion '29.0.3'
+
+    flavorDimensions "default"
 
     defaultConfig {
         applicationId "com.udacity.gradle.flavorspecificactivity"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
     }
@@ -42,9 +44,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+        free {
+            applicationId "com.udacity.gradle.flavorspecificactivity.free"
+        }
+        paid {
+            applicationId "com.udacity.gradle.flavorspecificactivity.paid"
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:24.1.1'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
