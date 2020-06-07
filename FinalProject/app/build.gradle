@@ -43,7 +43,7 @@ dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.1'
 
     // dependency for Java library that provides jokes
-    implementation project(':jokesource')
+    // implementation project(':jokesource')
     // dependency for Android library that displays jokes
     implementation project(':jokedisplay')
 

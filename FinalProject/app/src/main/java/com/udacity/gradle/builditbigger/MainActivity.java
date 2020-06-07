@@ -17,7 +17,6 @@ import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.michaelhsieh.jokedisplay.JokeActivity;
 //import com.michaelhsieh.jokesource.JokeSource;
-import com.michaelhsieh.jokesource.JokeSource;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
 import java.io.IOException;
@@ -100,19 +99,19 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
         context = params[0].first;
         String name = params[0].second;
 
-        JokeSource jokeSource = new JokeSource();
-        return jokeSource.getJoke();
+        try {
+            // return myApiService.sayHi(name).execute().getData();
 
-        /*try {
-            return myApiService.sayHi(name).execute().getData();
+            // this endpoint method was not being recognized
+            return myApiService.getJokeFromSource().execute().getData();
         } catch (IOException e) {
             return e.getMessage();
-        }*/
+        }
     }
 
     @Override
     protected void onPostExecute(String result) {
-        /*Toast.makeText(context, result, Toast.LENGTH_LONG).show();*/
+        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
         Intent jokeIntent = new Intent(context, JokeActivity.class);
         jokeIntent.putExtra(KEY_JOKE, result);
         context.startActivity(jokeIntent);
