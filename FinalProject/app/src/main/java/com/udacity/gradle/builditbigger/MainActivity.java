@@ -16,10 +16,10 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.michaelhsieh.jokedisplay.JokeActivity;
-//import com.michaelhsieh.jokesource.JokeSource;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import static com.michaelhsieh.jokedisplay.JokeActivity.KEY_JOKE;
 import android.widget.Toast;
@@ -67,14 +67,20 @@ public class MainActivity extends AppCompatActivity {
         startActivity(jokeIntent);*/
 
         new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
-        Log.d(TAG, "started EndpointsAsyncTask");
     }
 
 }
 
 class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
+
+    private static final String TAG = EndpointsAsyncTask.class.getSimpleName();
+
     private static MyApi myApiService = null;
-    private Context context;
+    // using Context object directly, ex. private Context context, will leak the Activity context
+    // private Context context;
+
+    // use a weak reference to avoid leaking a context object
+    private WeakReference<Context> weakContext;
 
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
@@ -96,7 +102,8 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
             myApiService = builder.build();
         }
 
-        context = params[0].first;
+        weakContext = new WeakReference<>(params[0].first);
+        // context = params[0].first;
         String name = params[0].second;
 
         try {
@@ -111,50 +118,16 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
     @Override
     protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-        Intent jokeIntent = new Intent(context, JokeActivity.class);
-        jokeIntent.putExtra(KEY_JOKE, result);
-        context.startActivity(jokeIntent);
+        if (weakContext != null) {
+            // get context without memory leak
+            Context context = weakContext.get();
+
+            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            Intent jokeIntent = new Intent(context, JokeActivity.class);
+            jokeIntent.putExtra(KEY_JOKE, result);
+            context.startActivity(jokeIntent);
+        } else {
+            Log.e(TAG, "weak context is null");
+        }
     }
 }
-
-/*
-class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
-    private static MyApi myApiService = null;
-    private Context context;
-
-    @Override
-    protected String doInBackground(Pair<Context, String>... params) {
-        if(myApiService == null) {  // Only do this once
-            MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
-                    new AndroidJsonFactory(), null)
-                    // options for running against local devappserver
-                    // - 10.0.2.2 is localhost's IP address in Android emulator
-                    // - turn off compression when running against local devappserver
-                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
-                    .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                        @Override
-                        public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
-                            abstractGoogleClientRequest.setDisableGZipContent(true);
-                        }
-                    });
-            // end options for devappserver
-
-            myApiService = builder.build();
-        }
-
-        context = params[0].first;
-        String name = params[0].second;
-
-        try {
-            return myApiService.sayHi(name).execute().getData();
-        } catch (IOException e) {
-            return e.getMessage();
-        }
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-        Toast.makeText(context, result, Toast.LENGTH_LONG).show();
-    }
-}*/
