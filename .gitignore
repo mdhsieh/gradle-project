@@ -3,6 +3,9 @@
 # properties file containing signing information
 /4.06-Exercise-ConfigureSigning/keystore.properties
 
+# resource file storing local computer's IP address
+/FinalProject/app/src/main/res/values/secrets.xml
+
 .DS_Store
 
 *.iml
