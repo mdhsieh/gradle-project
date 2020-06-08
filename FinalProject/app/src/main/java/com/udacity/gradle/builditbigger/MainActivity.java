@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     // true if testing endpoints on emulator, false if testing on real device
     // default true, change this if needed
-    private boolean testWithEmulator = false;
+    private boolean testWithEmulator = true;
 
     // the root URL used to test Google Cloud endpoints
     // this needs to be used in class EndpointsAsyncTask
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         // change root URL depending on whether testing on emulator or real device
         if (testWithEmulator) {
+            // .setRootUrl("http://10.0.2.2:8080/_ah/api/")
             rootUrl = "http://" + EMULATOR_IP_ADDRESS + ":8080/_ah/api/";
         }
         else {
@@ -125,9 +126,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
                     // options for running against local devappserver
-                    // - 10.0.2.2 is localhost's IP address in Android emulator
                     // - turn off compression when running against local devappserver
-                    // .setRootUrl("http://10.0.2.2:8080/_ah/api/")
                     .setRootUrl(MainActivity.rootUrl)
                     .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                         @Override
