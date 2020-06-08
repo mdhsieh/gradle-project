@@ -1,3 +1,3 @@
 <resources>
-    <string name="missing_joke">No jokes are provided!</string>
+    <string name="missing_joke">Please provide a joke for me to tell!</string>
 </resources>

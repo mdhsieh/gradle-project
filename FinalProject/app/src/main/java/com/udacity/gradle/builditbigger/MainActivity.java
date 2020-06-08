@@ -22,16 +22,49 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import static com.michaelhsieh.jokedisplay.JokeActivity.KEY_JOKE;
+
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // true if testing endpoints on emulator, false if testing on real device
+    // default true, change this if needed
+    private boolean testWithEmulator = false;
+
+    // the root URL used to test Google Cloud endpoints
+    // this needs to be used in class EndpointsAsyncTask
+    static String rootUrl;
+
+    // loading indicator to let user know joke is being retrieved through Google Cloud Engine module
+    private ProgressBar loadingIndicator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 10.0.2.2 is localhost's IP address in Android emulator
+        final String EMULATOR_IP_ADDRESS = "10.0.2.2";
+        /* To test on a real device:
+        Create res/values/secrets.xml with string resource parse_local_computer_ip_address
+        containing your computer's IP address.
+        You need to turn off your computer's firewall to connect! */
+        final String LOCAL_COMPUTER_IP_ADDRESS = getString(R.string.parse_local_computer_ip_address);
+
+        // get loading indicator
+        loadingIndicator = findViewById(R.id.pb_loading);
+
+        // change root URL depending on whether testing on emulator or real device
+        if (testWithEmulator) {
+            rootUrl = "http://" + EMULATOR_IP_ADDRESS + ":8080/_ah/api/";
+        }
+        else {
+            rootUrl = "http://" + LOCAL_COMPUTER_IP_ADDRESS + ":8080/_ah/api/";
+        }
+        Log.d(TAG, "root url: " + rootUrl);
     }
 
 
@@ -58,39 +91,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-//        JokeSource jokeSource = new JokeSource();
-//        Toast.makeText(this, jokeSource.getJoke(), Toast.LENGTH_SHORT).show();
-
-        /*Intent jokeIntent = new Intent(this, JokeActivity.class);
-        JokeSource jokeSource = new JokeSource();
-        jokeIntent.putExtra(KEY_JOKE, jokeSource.getJoke());
-        startActivity(jokeIntent);*/
-
-        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, "Manfred"));
+        String defaultText = getString(R.string.default_joke);
+        /* Make loading indicator visible here, instead of in AsyncTask's
+        onPreExecute, because the context that AsyncTask will use is from
+        the parameters of doInBackground.
+         */
+        loadingIndicator.setVisibility(View.VISIBLE);
+        new EndpointsAsyncTask().execute(new Pair<Context, String>(this, defaultText));
     }
 
 }
 
+/* Retrieves the joke from the joke source in a background task, or
+shows default text and Toast if an error occurs. */
 class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> {
 
     private static final String TAG = EndpointsAsyncTask.class.getSimpleName();
 
     private static MyApi myApiService = null;
     // using Context object directly, ex. private Context context, will leak the Activity context
-    // private Context context;
 
     // use a weak reference to avoid leaking a context object
     private WeakReference<Context> weakContext;
 
+    // was connection successful or not
+    // default assume true
+    private boolean isConnectionSuccessful = true;
+
     @Override
     protected String doInBackground(Pair<Context, String>... params) {
         if(myApiService == null) {  // Only do this once
+
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
                     new AndroidJsonFactory(), null)
                     // options for running against local devappserver
                     // - 10.0.2.2 is localhost's IP address in Android emulator
                     // - turn off compression when running against local devappserver
-                    .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                    // .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                    .setRootUrl(MainActivity.rootUrl)
                     .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
                         @Override
                         public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
@@ -103,26 +141,40 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
         }
 
         weakContext = new WeakReference<>(params[0].first);
-        // context = params[0].first;
-        String name = params[0].second;
+        String defaultText = params[0].second;
 
         try {
-            // return myApiService.sayHi(name).execute().getData();
-
-            // this endpoint method was not being recognized
+            // this endpoint method gets a joke from the joke source library
+            // through the Google Cloud Engine module
             return myApiService.getJokeFromSource().execute().getData();
         } catch (IOException e) {
-            return e.getMessage();
+            Log.e(TAG, e.getMessage());
+            isConnectionSuccessful = false;
+            return defaultText;
         }
     }
 
     @Override
     protected void onPostExecute(String result) {
+
         if (weakContext != null) {
-            // get context without memory leak
+            // get Activity context without memory leak
             Context context = weakContext.get();
 
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
+            if (context instanceof MainActivity) {
+                ProgressBar bar = ((MainActivity) context).findViewById(R.id.pb_loading);
+                bar.setVisibility(View.GONE);
+            } else {
+                // should never happen
+                Log.e(TAG, "couldn't hide loading indicator");
+                Log.e(TAG, "context is not an instance of MainActivity: " + context);
+            }
+
+            if (!isConnectionSuccessful) {
+                Toast.makeText(context, R.string.connection_error, Toast.LENGTH_LONG).show();
+            }
+
+            // Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             Intent jokeIntent = new Intent(context, JokeActivity.class);
             jokeIntent.putExtra(KEY_JOKE, result);
             context.startActivity(jokeIntent);

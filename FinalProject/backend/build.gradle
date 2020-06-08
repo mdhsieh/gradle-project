@@ -23,6 +23,17 @@ apply plugin: 'com.google.cloud.tools.endpoints-framework-server'
 sourceCompatibility = JavaVersion.VERSION_1_7
 targetCompatibility = JavaVersion.VERSION_1_7
 
+
+// allow testing on a physical device
+
+// make your development server accessible to the network by
+// setting it to listen to external connections
+appengine {
+    run {
+        host = '0.0.0.0'
+    }
+}
+
 dependencies {
     implementation 'com.google.endpoints:endpoints-framework:2.0.9'
     implementation 'javax.inject:javax.inject:1'
