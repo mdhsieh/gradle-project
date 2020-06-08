@@ -49,5 +49,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    // use implementation because we are creating and adding IdlingResource class to production code,
+    // not just in androidTest namespace
+    implementation 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+
     testImplementation 'junit:junit:4.12'
 }
