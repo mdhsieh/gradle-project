@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
@@ -16,6 +20,7 @@ import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
 import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 import com.michaelhsieh.jokedisplay.JokeActivity;
+import com.udacity.gradle.builditbigger.IdlingResource.SimpleIdlingResource;
 import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
 
 import java.io.IOException;
@@ -41,10 +46,32 @@ public class MainActivity extends AppCompatActivity {
     // loading indicator to let user know joke is being retrieved through Google Cloud Engine module
     private ProgressBar loadingIndicator;
 
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private SimpleIdlingResource idlingResource;
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource()
+    {
+        if (idlingResource == null)
+        {
+            idlingResource = new SimpleIdlingResource();
+        }
+
+        return idlingResource;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Get the IdlingResource instance
+        getIdlingResource();
 
         // 10.0.2.2 is localhost's IP address in Android emulator
         final String EMULATOR_IP_ADDRESS = "10.0.2.2";
