@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     // this needs to be used in class EndpointsAsyncTask
     static String rootUrl;
 
-    // loading indicator to let user know joke is being retrieved through Google Cloud Engine module
+    // loading indicator to let user know joke is being retrieved through Google Cloud Endpoints module
     private ProgressBar loadingIndicator;
 
     // The Idling Resource which will be null in production.
@@ -171,7 +171,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
 
         try {
             // this endpoint method gets a joke from the joke source library
-            // through the Google Cloud Engine module
+            // through the Google Cloud Endpoints module
             return myApiService.getJokeFromSource().execute().getData();
         } catch (IOException e) {
             Log.e(TAG, e.getMessage());
