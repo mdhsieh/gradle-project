@@ -18,7 +18,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /** Tests that the Async task which starts when the button is clicked in MainActivity
- *  retrieves a non-empty String.
+ *  retrieves a joke.
  */
 @RunWith(JUnit4.class)
 public class IdlingResourceMainActivityTest {

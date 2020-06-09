@@ -68,3 +68,12 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 }
+
+task runIdlingResourceTest {
+    dependsOn ':backend:appEngineStart'
+    dependsOn 'connectedAndroidTest'
+    dependsOn ':backend:appEngineStop'
+
+//    tasks.findByName('connectedAndroidTest').mustRunAfter 'backend:appEngineStart'
+//    tasks.findByName(':backend:appEngineStop').mustRunAfter 'connectedAndroidTest'
+}
