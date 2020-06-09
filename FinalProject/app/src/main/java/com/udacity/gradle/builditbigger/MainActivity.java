@@ -137,6 +137,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
     private static final String TAG = EndpointsAsyncTask.class.getSimpleName();
 
     private static MyApi myApiService = null;
+
     // using Context object directly, ex. private Context context, will leak the Activity context
 
     // use a weak reference to avoid leaking a context object
@@ -174,6 +175,11 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
             // through the Google Cloud Endpoints module
             return myApiService.getJokeFromSource().execute().getData();
         } catch (IOException e) {
+            /* Connection can timeout and fail because
+            1. No Internet connection
+            2. Firewall blocks connection to your local computer
+            3. Gradle task appEngineStart in backend->appengine standard environment was not run
+             */
             Log.e(TAG, e.getMessage());
             isConnectionSuccessful = false;
             return defaultText;
@@ -187,6 +193,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
             // get Activity context without memory leak
             Context context = weakContext.get();
 
+            // hide the loading indicator
             if (context instanceof MainActivity) {
                 ProgressBar bar = ((MainActivity) context).findViewById(R.id.pb_loading);
                 bar.setVisibility(View.GONE);
@@ -196,6 +203,7 @@ class EndpointsAsyncTask extends AsyncTask<Pair<Context, String>, Void, String> 
                 Log.e(TAG, "context is not an instance of MainActivity: " + context);
             }
 
+            // display toast if connection failed
             if (!isConnectionSuccessful) {
                 Toast.makeText(context, R.string.connection_error, Toast.LENGTH_LONG).show();
             }
