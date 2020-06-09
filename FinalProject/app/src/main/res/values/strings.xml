@@ -6,4 +6,5 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="connection_error">An internet connection error occurred!</string>
     <string name="default_joke">No jokes are available!</string>
+    <string name="test_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
 </resources>

@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity {
 
         // initialize full-screen ad
         interstitialAd = new InterstitialAd(this);
+        // set ad unit ID
+        // using the dedicated test ad unit ID for Android interstitials
+        interstitialAd.setAdUnitId(getString(R.string.test_ad_unit_id));
         // create ad request
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
