@@ -63,7 +63,7 @@ dependencies {
     })
 
     // use implementation because we are creating and adding IdlingResource class to production code,
-    // not just in androidTest namespace
+    // not just in androidTest package
     implementation 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
 
     testImplementation 'junit:junit:4.12'
