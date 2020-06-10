@@ -69,11 +69,19 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-task runIdlingResourceTest {
-    dependsOn ':backend:appEngineStart'
-    dependsOn 'connectedAndroidTest'
-    dependsOn ':backend:appEngineStop'
+//task runIdlingResourceTest {
+//    dependsOn ':backend:appEngineStart'
+//    dependsOn 'connectedAndroidTest'
+//    dependsOn ':backend:appEngineStop'
 
-//    tasks.findByName('connectedAndroidTest').mustRunAfter 'backend:appEngineStart'
-//    tasks.findByName(':backend:appEngineStop').mustRunAfter 'connectedAndroidTest'
+//    task('connectedAndroidTest').mustRunAfter(project(':backend').task('appEngineStart'))
+//    project(':backend').task('appEngineStop').mustRunAfter('connectedAndroidTest')
+
+// Caused by: java.lang.NullPointerException: Cannot invoke method mustRunAfter() on null object
+//    tasks.findByName('connectedAndroidTest').mustRunAfter('backend:appEngineStart')
+//    tasks.findByName(':backend:appEngineStop').mustRunAfter('connectedAndroidTest')
+//}
+
+task runIdlingResourceTest(type: GradleBuild) {
+    tasks = [':backend:appEngineStart', 'connectedAndroidTest', ':backend:appEngineStop']
 }
