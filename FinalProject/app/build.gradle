@@ -69,6 +69,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
+// NOTE: running this task will cause the app's free version to not show ads and
+// will also uninstall both free and paid versions of the app when finished
 task runIdlingResourceTest(type: GradleBuild) {
     tasks = [':backend:appEngineStart', 'connectedAndroidTest', ':backend:appEngineStop']
 }
