@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             rootUrl = "http://" + LOCAL_COMPUTER_IP_ADDRESS + ":8080/_ah/api/";
         }
-        Log.d(TAG, "root url: " + rootUrl);
+        // Log.d(TAG, "root url: " + rootUrl);
     }
 
 
